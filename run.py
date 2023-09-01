@@ -85,6 +85,13 @@ def btn_pressed():
     sequence, scramble = scrambler.getScramble(conf.moveEdgeCount, conf.allowEdgeCycles, conf.dontUseEdges, conf.edgeTwistCount, conf.moveCornerCount, conf.allowCornerCycles, conf.dontUseCorners, conf.cornerTwistCount)
     if scramble == None:
         scramble = 'Scramble not possible with such settings'
+    else:
+        moves = scramble.count(' ')
+        for _ in range(1):
+            _sequence, _scramble = scrambler.getScramble(conf.moveEdgeCount, conf.allowEdgeCycles, conf.dontUseEdges, conf.edgeTwistCount, conf.moveCornerCount, conf.allowCornerCycles, conf.dontUseCorners, conf.cornerTwistCount)
+            if moves > _scramble.count(' '):
+                sequence, scramble = _sequence, _scramble
+                moves = _scramble.count(' ')
     lb_scramble.config(text=scramble)
     toggleSequence()
 

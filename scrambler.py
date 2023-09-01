@@ -274,8 +274,8 @@ def getCornerNext():
     cornerSequence += conf.cornerLetters[nxt]
     swap(corners, buffer%8, nxt%8)
     swap(corner_orientations, buffer%8, nxt%8)
-    corner_orientations[nxt%8] += nxt//8
-    corner_orientations[buffer%8] += 3-nxt//8
+    corner_orientations[nxt%8] += nxt//8 + 3 - buffer//8
+    corner_orientations[buffer%8] += 3-nxt//8 + buffer//8
     return nxt
 
 def setUsedCorner(nxt):
@@ -305,7 +305,7 @@ def scrambleCorners():
     used[(buffer%8)] = used[(buffer%8) + 8] = used[(buffer%8) + 16] = 1
     while count < moveCornerCount:
         if used == [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]:
-            return False 
+            return False
         if hand == -1:
             hand = getCornerNext()
             setUsedCorner(hand)
@@ -364,6 +364,26 @@ def getScramble(p1=moveEdgeCount, p2=allowEdgeCycles, p3=dontUseEdges, p4=edgeTw
     
     edgeSequence = edgeSequence[::-1]
     cornerSequence = cornerSequence[::-1]
+    # move cycles to the end
+    first_not_cycle = len(edgeSequence)-1
+    while first_not_cycle > 0:
+        if edgeSequence.count(edgeSequence[first_not_cycle]) == 2:
+            first_not_cycle += 1
+            break
+        first_not_cycle -= 1
+    if first_not_cycle > 1:
+        edgeSequence = edgeSequence[first_not_cycle:] + edgeSequence[:first_not_cycle]
+
+    first_not_cycle = len(cornerSequence)-1
+    while first_not_cycle > 0:
+        if cornerSequence.count(cornerSequence[first_not_cycle]) == 2:
+            first_not_cycle += 1
+            break
+        first_not_cycle -= 1
+    if first_not_cycle > 1:
+        cornerSequence = cornerSequence[first_not_cycle:] + cornerSequence[:first_not_cycle]
+
+
     for i in range(0, int(len(edgeSequence)*1.5), 3):
         edgeSequence = edgeSequence[:i] + ' ' + edgeSequence[i:]
     for i in range(0, int(len(cornerSequence)*1.5), 3):
